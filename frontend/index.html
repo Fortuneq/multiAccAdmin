@@ -413,7 +413,67 @@
         <div class="content">
             <!-- Section 1: Overview Cards -->
             <section class="overview-grid" id="overviewCards">
-                <!-- Cards populated by JavaScript -->
+                <!-- Placeholder cards - will be replaced by JavaScript -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-blue">
+                            <i class="ri-user-star-fill"></i>
+                        </div>
+                        <div class="trend-badge trend-up">
+                            <i class="ri-arrow-up-line"></i>
+                            +12%
+                        </div>
+                    </div>
+                    <div>
+                        <div class="stat-value">Loading...</div>
+                        <div class="stat-label">Total Accounts</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-green">
+                            <i class="ri-user-follow-fill"></i>
+                        </div>
+                        <div class="trend-badge trend-up">
+                            <i class="ri-arrow-up-line"></i>
+                            +8%
+                        </div>
+                    </div>
+                    <div>
+                        <div class="stat-value">Loading...</div>
+                        <div class="stat-label">Active Accounts</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-purple">
+                            <i class="ri-video-fill"></i>
+                        </div>
+                        <div class="trend-badge trend-up">
+                            <i class="ri-arrow-up-line"></i>
+                            +24%
+                        </div>
+                    </div>
+                    <div>
+                        <div class="stat-value">Loading...</div>
+                        <div class="stat-label">Total Videos</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-orange">
+                            <i class="ri-heart-3-fill"></i>
+                        </div>
+                        <div class="trend-badge trend-neutral">
+                            <i class="ri-subtract-line"></i>
+                            0%
+                        </div>
+                    </div>
+                    <div>
+                        <div class="stat-value">Loading...</div>
+                        <div class="stat-label">Avg Engagement</div>
+                    </div>
+                </div>
             </section>
 
             <!-- Section 2: Charts -->
@@ -422,7 +482,71 @@
                     Performance Analytics
                 </div>
                 <div class="charts-container" id="chartsContainer">
-                    <!-- Charts populated by JavaScript -->
+                    <!-- Placeholder charts - will be replaced by JavaScript -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Video Performance Trend</div>
+                            <div class="chart-actions">
+                                <i class="ri-download-2-line"></i>
+                            </div>
+                        </div>
+                        <div class="chart-visual">
+                            <svg viewBox="0 0 400 300">
+                                <defs>
+                                    <linearGradient id="lineGradient" x1="0" x2="0" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#0066FF" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#0066FF" stop-opacity="0"/>
+                                    </linearGradient>
+                                </defs>
+                                <line class="chart-grid-line" x1="0" y1="60" x2="400" y2="60"/>
+                                <line class="chart-grid-line" x1="0" y1="120" x2="400" y2="120"/>
+                                <line class="chart-grid-line" x1="0" y1="180" x2="400" y2="180"/>
+                                <line class="chart-grid-line" x1="0" y1="240" x2="400" y2="240"/>
+                                <path class="line-path" d="M 50,200 L 100,180 L 150,140 L 200,120 L 250,100 L 300,80 L 350,60"/>
+                                <path class="area-path" d="M 50,200 L 100,180 L 150,140 L 200,120 L 250,100 L 300,80 L 350,60 L 350,280 L 50,280 Z"/>
+                                <text class="chart-axis-text" x="50" y="295">Mon</text>
+                                <text class="chart-axis-text" x="150" y="295">Wed</text>
+                                <text class="chart-axis-text" x="250" y="295">Fri</text>
+                                <text class="chart-axis-text" x="350" y="295">Sun</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Platform Comparison</div>
+                        </div>
+                        <div class="chart-visual">
+                            <svg viewBox="0 0 300 300">
+                                <g class="bar-group">
+                                    <rect class="bar-tk" x="50" y="100" width="50" height="150" rx="4"/>
+                                    <rect class="bar-reels" x="125" y="80" width="50" height="170" rx="4"/>
+                                    <rect class="bar-shorts" x="200" y="120" width="50" height="130" rx="4"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Engagement Metrics</div>
+                        </div>
+                        <div class="chart-visual">
+                            <svg viewBox="0 0 300 300">
+                                <g class="radar-web">
+                                    <line x1="150" y1="50" x2="250" y2="120"/>
+                                    <line x1="250" y1="120" x2="220" y2="230"/>
+                                    <line x1="220" y1="230" x2="80" y2="230"/>
+                                    <line x1="80" y1="230" x2="50" y2="120"/>
+                                    <line x1="50" y1="120" x2="150" y2="50"/>
+                                </g>
+                                <polygon class="radar-area" points="150,80 220,130 200,210 100,210 80,130"/>
+                                <circle class="radar-point" cx="150" cy="80" r="4"/>
+                                <circle class="radar-point" cx="220" cy="130" r="4"/>
+                                <circle class="radar-point" cx="200" cy="210" r="4"/>
+                                <circle class="radar-point" cx="100" cy="210" r="4"/>
+                                <circle class="radar-point" cx="80" cy="130" r="4"/>
+                            </svg>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -436,7 +560,43 @@
                 </div>
 
                 <div class="table-container" id="videoTableContainer">
-                    <!-- Table populated by JavaScript -->
+                    <!-- Placeholder table - will be replaced by JavaScript -->
+                    <div class="table-header">
+                        <div>Video ID</div>
+                        <div>Platform</div>
+                        <div>Date</div>
+                        <div>Views</div>
+                        <div>Likes</div>
+                        <div>Comments</div>
+                        <div class="text-right">Engagement</div>
+                    </div>
+                    <div class="data-row">
+                        <div>#VID-001</div>
+                        <div><span class="platform-badge plat-tk">TikTok</span></div>
+                        <div>Loading...</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div class="text-right engagement-high">-</div>
+                    </div>
+                    <div class="data-row">
+                        <div>#VID-002</div>
+                        <div><span class="platform-badge plat-ig">Reels</span></div>
+                        <div>Loading...</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div class="text-right engagement-med">-</div>
+                    </div>
+                    <div class="data-row">
+                        <div>#VID-003</div>
+                        <div><span class="platform-badge plat-yt">Shorts</span></div>
+                        <div>Loading...</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div>-</div>
+                        <div class="text-right engagement-high">-</div>
+                    </div>
                 </div>
 
                 <div class="pagination">

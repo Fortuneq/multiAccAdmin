@@ -2,177 +2,825 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Generator</title>
+    <meta name="viewport" content="width=1920, initial-scale=1.0">
+    <title>Modern Social Media Admin Panel</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/generator.css">
+    <style>
+        /* Font Imports */
+        @font-face {
+            font-family: 'MiSans-Regular';
+            src: url('https://assets-persist.lovart.ai/agent-static-assets/MiSans-Regular.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'MiSans-Medium';
+            src: url('https://assets-persist.lovart.ai/agent-static-assets/MiSans-Medium.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'MiSans-Bold';
+            src: url('https://assets-persist.lovart.ai/agent-static-assets/MiSans-Bold.ttf') format('truetype');
+        }
+
+        :root {
+            --primary: #2563EB;
+            --primary-light: #EFF6FF;
+            --secondary: #64748B;
+            --success: #10B981;
+            --bg-body: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text-main: #1E293B;
+            --text-light: #94A3B8;
+            --border: #E2E8F0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'MiSans-Regular', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            width: 1920px;
+            min-height: 1080px;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 32px 24px;
+            height: 100vh;
+            flex-shrink: 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'MiSans-Bold', sans-serif;
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 48px;
+        }
+
+        .logo i {
+            font-size: 32px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 16px;
+            font-family: 'MiSans-Medium', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            margin-top: 24px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .user-info h4 {
+            font-size: 14px;
+            font-family: 'MiSans-Bold';
+        }
+
+        .user-info p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Topbar */
+        .topbar {
+            height: 80px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        .breadcrumb {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .breadcrumb span {
+            color: var(--text-main);
+            font-family: 'MiSans-Medium';
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .search-bar {
+            background: var(--bg-body);
+            padding: 10px 16px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+            width: 300px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary);
+            cursor: pointer;
+            background: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-family: 'MiSans-Medium';
+            cursor: pointer;
+        }
+
+        /* Dashboard Content */
+        .dashboard-container {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* Section Title */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-family: 'MiSans-Bold';
+            color: var(--text-main);
+        }
+
+        /* Account Cards */
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .account-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .account-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .acc-tiktok::before { background: #000000; }
+        .acc-reels::before { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .acc-shorts::before { background: #FF0000; }
+
+        .acc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .acc-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .bg-tiktok { background: #000; color: #fff; }
+        .bg-reels { background: linear-gradient(45deg, #f09433, #dc2743); color: #fff; }
+        .bg-shorts { background: #FF0000; color: #fff; }
+
+        .acc-badge {
+            padding: 4px 12px;
+            background: #ECFDF5;
+            color: var(--success);
+            font-size: 12px;
+            border-radius: 20px;
+            font-family: 'MiSans-Medium';
+        }
+
+        .acc-info h3 {
+            font-size: 18px;
+            font-family: 'MiSans-Bold';
+            margin-bottom: 4px;
+        }
+
+        .acc-info p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .proxy-info {
+            background: var(--bg-body);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--secondary);
+        }
+
+        .proxy-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+
+        /* Workspace Grid */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            height: 600px;
+        }
+
+        /* Video Editor */
+        .editor-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .editor-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .editor-title {
+            font-family: 'MiSans-Bold';
+            font-size: 18px;
+        }
+
+        .editor-body {
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            gap: 24px;
+            background: #FAFAFA;
+        }
+
+        .preview-area {
+            width: 320px;
+            background: #000;
+            border-radius: var(--radius-md);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-content {
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+        }
+
+        .timeline-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .timeline-track {
+            background: white;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .track-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--secondary);
+            font-family: 'MiSans-Medium';
+        }
+
+        .track-bar-container {
+            height: 32px;
+            background: var(--bg-body);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .track-segment {
+            position: absolute;
+            height: 100%;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding-left: 8px;
+            font-size: 10px;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .seg-video { width: 80%; left: 0; background: var(--primary); }
+        .seg-audio { width: 60%; left: 10%; background: #8B5CF6; }
+        .seg-text { width: 40%; left: 20%; background: #F59E0B; }
+
+        /* Controls Panel */
+        .controls-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .control-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .control-group {
+            margin-bottom: 24px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .label-text {
+            font-size: 14px;
+            font-family: 'MiSans-Bold';
+            color: var(--text-main);
+        }
+
+        /* Form Elements */
+        .custom-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'MiSans-Regular';
+            color: var(--text-main);
+            background: white;
+            outline: none;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .slider-fill {
+            width: 70%;
+            height: 100%;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .slider-thumb {
+            width: 16px;
+            height: 16px;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            left: 70%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            background: var(--border);
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-knob {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-knob {
+            left: 22px;
+        }
+
+        /* Stats in Controls */
+        .mini-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-item {
+            background: var(--bg-body);
+            padding: 16px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 20px;
+            font-family: 'MiSans-Bold';
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .music-player {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-body);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+        }
+
+        .play-btn {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .music-info {
+            flex: 1;
+            font-size: 13px;
+        }
+
+        .music-title {
+            display: block;
+            font-family: 'MiSans-Medium';
+        }
+
+        .music-duration {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* Icons in Sidebar */
+        .ri-tiktok-fill, .ri-instagram-line, .ri-youtube-fill {
+            font-size: 24px;
+        }
+    </style>
 </head>
 <body>
-    <div class="page-container">
-        <!-- Navigation -->
-        <nav class="nav-menu">
-            <a href="index.html" class="nav-logo">
-                <i class="ri-bar-chart-grouped-fill"></i>
-                <span>Multi-Account Panel</span>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="ri-movie-2-fill"></i>
+            <span>ReelsAdmin</span>
+        </div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item active">
+                <i class="ri-dashboard-line"></i>
+                <span>Dashboard</span>
             </a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">
-                    <i class="ri-dashboard-line"></i><span>Dashboard</span>
-                </a>
-                <a href="accounts.html" class="nav-link">
-                    <i class="ri-user-line"></i><span>Accounts</span>
-                </a>
-                <a href="generator.html" class="nav-link active">
-                    <i class="ri-magic-line"></i><span>Generator</span>
-                </a>
+            <a href="#" class="nav-item">
+                <i class="ri-user-follow-line"></i>
+                <span>Accounts</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="ri-magic-line"></i>
+                <span>Generator</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="ri-bar-chart-grouped-line"></i>
+                <span>Analytics</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="ri-folder-music-line"></i>
+                <span>Assets Library</span>
+            </a>
+            <div style="flex:1"></div>
+            <a href="#" class="nav-item">
+                <i class="ri-settings-3-line"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+        <div class="user-profile">
+            <div class="avatar">JM</div>
+            <div class="user-info">
+                <h4>James Miller</h4>
+                <p>Admin Access</p>
             </div>
-            <div class="nav-actions">
+            <i class="ri-more-2-fill" style="color: var(--text-light); margin-left: auto;"></i>
+        </div>
+    </div>
+
+    <!-- Main Section -->
+    <div class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="breadcrumb">
+                Admin Panel / <span>Video Generator</span>
+            </div>
+            <div class="topbar-actions">
+                <div class="search-bar">
+                    <i class="ri-search-line"></i>
+                    <span>Search video, audio...</span>
+                </div>
+                <div class="icon-btn">
+                    <i class="ri-notification-3-line"></i>
+                </div>
                 <button class="btn-primary" onclick="createNewProject()">
-                    <i class="ri-add-line"></i> New Project
+                    <i class="ri-add-line" style="margin-right: 8px;"></i>New Project
                 </button>
             </div>
-        </nav>
+        </div>
 
-        <div class="generator-layout">
-            <!-- Left: Editor -->
-            <main class="editor-section">
-                <div class="editor-header">
-                    <h2>Video Studio</h2>
-                    <div class="editor-actions">
-                        <button class="btn-icon" title="Undo"><i class="ri-arrow-go-back-line"></i></button>
-                        <button class="btn-icon" title="Redo"><i class="ri-arrow-go-forward-line"></i></button>
+        <!-- Dashboard Content -->
+        <div class="dashboard-container">
+
+            <!-- Section 1: Account Overview -->
+            <div class="section-header">
+                <h2 class="section-title">Connected Accounts</h2>
+                <i class="ri-refresh-line" style="color: var(--secondary); cursor: pointer;" onclick="loadAccounts()"></i>
+            </div>
+            <div class="accounts-grid" id="accountsGrid">
+                <!-- Accounts populated by JavaScript -->
+            </div>
+
+            <!-- Section 2: Editor & Controls -->
+            <div class="workspace-grid">
+                <!-- Left: Video Editor -->
+                <div class="editor-card">
+                    <div class="editor-header">
+                        <div class="editor-title">Video Studio</div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="icon-btn" style="width:32px; height:32px; border:none; background:#F1F5F9;"><i class="ri-arrow-go-back-line"></i></button>
+                            <button class="icon-btn" style="width:32px; height:32px; border:none; background:#F1F5F9;"><i class="ri-arrow-go-forward-line"></i></button>
+                        </div>
                     </div>
-                </div>
+                    <div class="editor-body">
+                        <!-- Preview Phone -->
+                        <div class="preview-area" id="previewArea">
+                            <div class="preview-content">
+                                <i class="ri-play-circle-fill" style="font-size: 48px; cursor: pointer;"></i>
+                                <p style="margin-top: 12px;">Upload a video</p>
+                            </div>
+                        </div>
 
-                <!-- Preview Area -->
-                <div class="preview-container">
-                    <div class="preview-screen" id="previewScreen">
-                        <div class="preview-placeholder">
-                            <i class="ri-video-line"></i>
-                            <p>Upload a video to start editing</p>
+                        <!-- Timeline -->
+                        <div class="timeline-area">
+                            <div class="timeline-track">
+                                <div class="track-header"><i class="ri-movie-line"></i> Video Track</div>
+                                <div class="track-bar-container" id="videoTrack">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                            <div class="timeline-track">
+                                <div class="track-header"><i class="ri-music-2-line"></i> Audio Track</div>
+                                <div class="track-bar-container" id="audioTrack">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                            <div class="timeline-track">
+                                <div class="track-header"><i class="ri-text"></i> Subtitle Track</div>
+                                <div class="track-bar-container" id="subtitleTrack">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                            <div style="margin-top: auto; display: flex; justify-content: flex-end; gap: 12px;">
+                                <button style="background: white; border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; color: var(--text-main); cursor: pointer;" onclick="saveDraft()">Draft Save</button>
+                                <button style="background: var(--primary); border: none; padding: 8px 20px; border-radius: 6px; color: white; cursor: pointer;" onclick="exportVideo()" id="exportBtn">Export Video</button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Timeline -->
-                <div class="timeline-container">
-                    <div class="timeline-header">
-                        <h3>Timeline</h3>
-                        <button class="btn-clear" onclick="clearTimeline()">
-                            <i class="ri-delete-bin-line"></i> Clear
-                        </button>
-                    </div>
-
-                    <div class="timeline-tracks" id="timelineTracks">
-                        <div class="track">
-                            <div class="track-label">
-                                <i class="ri-movie-line"></i> Video
+                <!-- Right: Settings & Stats -->
+                <div class="controls-panel">
+                    <!-- Configuration Card -->
+                    <div class="control-card">
+                        <div class="label-row">
+                            <span class="label-text">Audio Settings</span>
+                        </div>
+                        <div class="control-group">
+                            <div class="music-player">
+                                <div class="play-btn"><i class="ri-play-mini-fill"></i></div>
+                                <div class="music-info">
+                                    <span class="music-title">Midnight City Vibes</span>
+                                    <span class="music-duration">02:14 • Lo-Fi Beats</span>
+                                </div>
+                                <i class="ri-menu-add-line" style="color: var(--primary); cursor: pointer;"></i>
                             </div>
-                            <div class="track-content" id="videoTrack">
-                                <div class="track-empty">No video loaded</div>
+                        </div>
+                        <div class="control-group">
+                            <div class="label-row" style="margin-bottom: 8px;">
+                                <span style="font-size: 12px; color: var(--text-light);">Volume Level</span>
+                                <span style="font-size: 12px; font-weight: bold;" id="volumeValue">70%</span>
+                            </div>
+                            <div class="slider-container">
+                                <i class="ri-volume-down-line" style="font-size: 14px; color: var(--text-light);"></i>
+                                <div class="slider">
+                                    <div class="slider-fill"></div>
+                                    <div class="slider-thumb"></div>
+                                </div>
+                                <i class="ri-volume-up-line" style="font-size: 14px; color: var(--text-light);"></i>
                             </div>
                         </div>
 
-                        <div class="track">
-                            <div class="track-label">
-                                <i class="ri-music-2-line"></i> Audio
-                            </div>
-                            <div class="track-content" id="audioTrack">
-                                <div class="track-empty">No audio added</div>
-                            </div>
+                        <div style="border-top: 1px solid var(--border); margin: 20px 0;"></div>
+
+                        <div class="label-row">
+                            <span class="label-text">Subtitles & Effects</span>
                         </div>
+                        <div class="control-group">
+                            <div class="label-row">
+                                <span style="font-size: 13px;">Subtitle Uniquefication</span>
+                                <div class="toggle-switch active" id="uniquifyToggle" onclick="toggleUniquify()">
+                                    <div class="toggle-knob"></div>
+                                </div>
+                            </div>
+                            <p style="font-size: 11px; color: var(--text-light); margin-top: -8px; margin-bottom: 16px;">Randomize font tracking to avoid duplicate content detection.</p>
 
-                        <div class="track">
-                            <div class="track-label">
-                                <i class="ri-text"></i> Subtitles
+                            <div class="label-row">
+                                <span style="font-size: 13px;">Auto-Filter</span>
                             </div>
-                            <div class="track-content" id="subtitleTrack">
-                                <div class="track-empty">No subtitles</div>
-                            </div>
+                            <select class="custom-select" id="filterSelect">
+                                <option>Cinematic Warmth</option>
+                                <option>Bright & Airy</option>
+                                <option>Cyberpunk Contrast</option>
+                                <option>None</option>
+                            </select>
                         </div>
                     </div>
 
-                    <div class="timeline-footer">
-                        <button class="btn-secondary" onclick="saveDraft()">
-                            <i class="ri-save-line"></i> Save Draft
-                        </button>
-                        <button class="btn-primary" onclick="exportVideo()" id="exportBtn" disabled>
-                            <i class="ri-download-line"></i> Export Video
-                        </button>
-                    </div>
-                </div>
-            </main>
-
-            <!-- Right: Controls -->
-            <aside class="controls-panel">
-                <!-- Upload Section -->
-                <div class="control-section">
-                    <h3>Upload Media</h3>
-                    <div class="upload-area" id="videoUploadArea" onclick="document.getElementById('videoInput').click()">
-                        <i class="ri-upload-cloud-line"></i>
-                        <p>Click or drag video file</p>
-                        <input type="file" id="videoInput" accept="video/*" style="display: none;" onchange="handleVideoUpload(event)">
-                    </div>
-                    <div class="upload-area" id="audioUploadArea" onclick="document.getElementById('audioInput').click()" style="margin-top: 12px;">
-                        <i class="ri-music-line"></i>
-                        <p>Click or drag audio file</p>
-                        <input type="file" id="audioInput" accept="audio/*" style="display: none;" onchange="handleAudioUpload(event)">
-                    </div>
-                </div>
-
-                <!-- Audio Settings -->
-                <div class="control-section">
-                    <h3>Audio Settings</h3>
-                    <div class="control-group">
-                        <label>Volume</label>
-                        <div class="slider-wrapper">
-                            <input type="range" id="volumeSlider" min="0" max="100" value="70" oninput="updateVolume(this.value)">
-                            <span id="volumeValue">70%</span>
+                    <!-- Mini Stats Card -->
+                    <div class="control-card">
+                        <div class="label-row">
+                            <span class="label-text">Performance (Last 24h)</span>
+                            <i class="ri-arrow-right-up-line" style="color: var(--success);"></i>
+                        </div>
+                        <div class="mini-stats" id="performanceStats">
+                            <!-- Stats populated by JS -->
+                        </div>
+                        <div style="margin-top: 16px;">
+                             <!-- Simple bar chart visualization -->
+                             <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 60px; gap: 4px;">
+                                 <div style="width: 100%; background: #E2E8F0; border-radius: 4px; height: 40%;"></div>
+                                 <div style="width: 100%; background: #E2E8F0; border-radius: 4px; height: 60%;"></div>
+                                 <div style="width: 100%; background: #E2E8F0; border-radius: 4px; height: 30%;"></div>
+                                 <div style="width: 100%; background: var(--primary); border-radius: 4px; height: 85%;"></div>
+                                 <div style="width: 100%; background: #E2E8F0; border-radius: 4px; height: 50%;"></div>
+                                 <div style="width: 100%; background: #E2E8F0; border-radius: 4px; height: 75%;"></div>
+                                 <div style="width: 100%; background: #E2E8F0; border-radius: 4px; height: 65%;"></div>
+                             </div>
+                             <div style="text-align: center; margin-top: 8px; font-size: 11px; color: var(--text-light);">Daily Views Trend</div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Effects & Filters -->
-                <div class="control-section">
-                    <h3>Effects & Filters</h3>
-                    <div class="control-group">
-                        <label>Video Filter</label>
-                        <select id="filterSelect" class="form-select" onchange="applyFilter(this.value)">
-                            <option value="none">None</option>
-                            <option value="cinematic">Cinematic Warmth</option>
-                            <option value="bright">Bright & Airy</option>
-                            <option value="cyberpunk">Cyberpunk Contrast</option>
-                            <option value="vintage">Vintage Film</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Subtitles -->
-                <div class="control-section">
-                    <h3>Subtitles</h3>
-                    <div class="control-group">
-                        <label>Subtitle Text</label>
-                        <textarea id="subtitleText" class="form-textarea" rows="3" placeholder="Enter subtitle text..."></textarea>
-                    </div>
-                    <div class="control-group">
-                        <label class="toggle-label">
-                            <input type="checkbox" id="uniquifyToggle" checked>
-                            <span>Uniquification (Anti-duplicate)</span>
-                        </label>
-                        <p class="help-text">Randomize font spacing to avoid duplicate detection</p>
-                    </div>
-                </div>
-
-                <!-- Account Selection -->
-                <div class="control-section">
-                    <h3>Target Account</h3>
-                    <select id="accountSelect" class="form-select">
-                        <option value="">Select account...</option>
-                        <!-- Populated by JavaScript -->
-                    </select>
-                </div>
-            </aside>
         </div>
     </div>
 
