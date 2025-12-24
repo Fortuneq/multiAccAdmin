@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <style>
+        /* Font Imports */
+        @font-face {
+            font-family: 'MiSans';
+            src: url('https://assets-persist.lovart.ai/agent-static-assets/MiSans-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'MiSans';
+            src: url('https://assets-persist.lovart.ai/agent-static-assets/MiSans-Medium.ttf') format('truetype');
+            font-weight: 500;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'MiSans';
+            src: url('https://assets-persist.lovart.ai/agent-static-assets/MiSans-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        /* Basic Reset & Layout */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'MiSans', sans-serif;
+            background-color: #F5F7FA;
+            color: #1F2937;
+            width: 1920px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard-container {
+            width: 1920px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        .top-nav {
+            height: 80px;
+            background: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0066FF;
+        }
+        
+        .logo i {
+            font-size: 32px;
+        }
+
+        .profile-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-badge {
+            position: relative;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6B7280;
+            transition: all 0.3s;
+        }
+
+        .notification-badge:hover {
+            background: #E5E7EB;
+            color: #0066FF;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0066FF, #00C6FF);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Section 1: Overview Cards */
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            height: 180px;
+        }
+
+        .stat-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .icon-blue { background: #E6F0FF; color: #0066FF; }
+        .icon-purple { background: #F3E8FF; color: #9333EA; }
+        .icon-green { background: #ECFDF5; color: #10B981; }
+        .icon-orange { background: #FFF7ED; color: #F59E0B; }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-top: 10px;
+            color: #111827;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .trend-badge {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .trend-up { background: #ECFDF5; color: #059669; }
+        .trend-neutral { background: #F3F4F6; color: #4B5563; }
+
+        /* Section 2: Charts */
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title i { color: #0066FF; }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            height: 520px; /* Approximately 60% of vertical space minus title */
+        }
+
+        .chart-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .chart-actions i {
+            color: #9CA3AF;
+            cursor: pointer;
+            font-size: 20px;
+            margin-left: 10px;
+        }
+
+        /* SVG Chart Styles */
+        .chart-visual {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .chart-grid-line { stroke: #E5E7EB; stroke-width: 1; stroke-dasharray: 4; }
+        .chart-axis-text { fill: #9CA3AF; font-size: 12px; font-family: 'MiSans'; }
+        
+        /* Line Chart */
+        .line-path { 
+            fill: none; 
+            stroke: #0066FF; 
+            stroke-width: 3; 
+            stroke-linecap: round; 
+            stroke-linejoin: round;
+            filter: drop-shadow(0 4px 6px rgba(0, 102, 255, 0.2));
+        }
+        .area-path {
+            fill: url(#lineGradient);
+            opacity: 0.2;
+        }
+
+        /* Bar Chart */
+        .bar-group rect {
+            rx: 4;
+            transition: height 0.3s ease;
+        }
+        .bar-tk { fill: #000000; }
+        .bar-reels { fill: #E1306C; }
+        .bar-shorts { fill: #FF0000; }
+
+        /* Radar Chart */
+        .radar-web { fill: none; stroke: #E5E7EB; stroke-width: 1; }
+        .radar-area { 
+            fill: rgba(0, 102, 255, 0.2); 
+            stroke: #0066FF; 
+            stroke-width: 2; 
+        }
+        .radar-point { fill: #FFFFFF; stroke: #0066FF; stroke-width: 2; r: 4; }
+
+        /* Section 3: Video Stats */
+        .stats-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .table-container {
+            width: 100%;
+            border-spacing: 0 12px;
+            border-collapse: separate;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 0.8fr 0.8fr 1fr 1fr 1fr 1fr 1fr;
+            padding: 0 24px;
+            margin-bottom: 8px;
+            color: #6B7280;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-row {
+            display: grid;
+            grid-template-columns: 0.8fr 0.8fr 1fr 1fr 1fr 1fr 1fr;
+            background: #FFFFFF;
+            padding: 20px 24px;
+            border-radius: 12px;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            font-size: 15px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .data-row:hover {
+            transform: scale(1.005);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            z-index: 10;
+        }
+
+        .platform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .plat-tk { background: #000000; color: #fff; }
+        .plat-ig { background: linear-gradient(45deg, #405DE6, #E1306C, #F56040, #FFDC80); color: #fff; }
+        .plat-yt { background: #FF0000; color: #fff; }
+
+        .engagement-high { color: #059669; font-weight: 700; }
+        .engagement-med { color: #D97706; font-weight: 700; }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 24px;
+            gap: 8px;
+        }
+        
+        .page-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #D1D5DB;
+            cursor: pointer;
+        }
+        .page-dot.active {
+            background: #0066FF;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Utility */
+        .text-right { text-align: right; }
+        
+        /* Gradients for Chart Fills */
+        .gradient-blue-text {
+            background: linear-gradient(135deg, #0066FF 0%, #3B82F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <!-- Navigation -->
+        <nav class="top-nav">
+            <div class="logo">
+                <i class="ri-bar-chart-grouped-fill"></i>
+                <span>Analytics Dashboard</span>
+            </div>
+            <div class="profile-area">
+                <div class="notification-badge">
+                    <i class="ri-notification-3-line"></i>
+                </div>
+                <div class="notification-badge">
+                    <i class="ri-settings-4-line"></i>
+                </div>
+                <div class="user-profile">
+                    <div class="text-right" style="margin-right: 4px;">
+                        <div style="font-weight: 600; font-size: 14px;">Alex Morgan</div>
+                        <div style="font-size: 12px; color: #6B7280;">Admin</div>
+                    </div>
+                    <div class="avatar">AM</div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- Section 1: Overview Cards -->
+            <section class="overview-grid">
+                <!-- Card 1 -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-blue">
+                            <i class="ri-video-fill"></i>
+                        </div>
+                        <div class="trend-badge trend-up">
+                            <i class="ri-arrow-up-line"></i> 12.5%
+                        </div>
+                    </div>
+                    <div>
+                        <div class="stat-value">2,845</div>
+                        <div class="stat-label">Total Videos Uploaded</div>
+                    </div>
+                    <!-- Mini visual background decoration -->
+                    <div style="position: absolute; right: -20px; bottom: -20px; opacity: 0.05; font-size: 120px; color: #0066FF;">
+                        <i class="ri-video-line"></i>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-purple">
+                            <i class="ri-heart-3-fill"></i>
+                        </div>
+                        <div class="trend-badge trend-up">
+                            <i class="ri-arrow-up-line"></i> 8.2%
+                        </div>
+                    </div>
+                    <div>
+                        <div class="stat-value">1.2M</div>
+                        <div class="stat-label">Total Likes & Comments</div>
+                    </div>
+                    <div style="position: absolute; right: -20px; bottom: -20px; opacity: 0.05; font-size: 120px; color: #9333EA;">
+                        <i class="ri-heart-line"></i>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-orange">
+                            <i class="ri-flashlight-fill"></i>
+                        </div>
+                        <div class="trend-badge trend-neutral">
+                            <i class="ri-subtract-line"></i> 0.8%
+                        </div>
+                    </div>
+                    <div>
+                        <div class="stat-value">5.4%</div>
+                        <div class="stat-label">Avg. Engagement Rate</div>
+                    </div>
+                    <div style="position: absolute; right: -20px; bottom: -20px; opacity: 0.05; font-size: 120px; color: #F59E0B;">
+                        <i class="ri-flashlight-line"></i>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon icon-green">
+                            <i class="ri-user-star-fill"></i>
+                        </div>
+                        <div class="trend-badge trend-up">
+                            <i class="ri-arrow-up-line"></i> 24%
+                        </div>
+                    </div>
+                    <div>
+                        <div class="stat-value">856</div>
+                        <div class="stat-label">Active Accounts Managed</div>
+                    </div>
+                    <div style="position: absolute; right: -20px; bottom: -20px; opacity: 0.05; font-size: 120px; color: #10B981;">
+                        <i class="ri-user-smile-line"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Charts -->
+            <section>
+                <div class="section-title">
+                    Performance Analytics
+                </div>
+                <div class="charts-container">
+                    <!-- Chart 1: Line Chart (Video Performance) -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Video Performance Trend</div>
+                            <div class="chart-actions">
+                                <i class="ri-more-fill"></i>
+                            </div>
+                        </div>
+                        <div class="chart-visual">
+                            <svg viewBox="0 0 400 250">
+                                <defs>
+                                    <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#0066FF" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#0066FF" stop-opacity="0"/>
+                                    </linearGradient>
+                                </defs>
+                                <!-- Grid Lines -->
+                                <line x1="40" y1="50" x2="380" y2="50" class="chart-grid-line" />
+                                <line x1="40" y1="100" x2="380" y2="100" class="chart-grid-line" />
+                                <line x1="40" y1="150" x2="380" y2="150" class="chart-grid-line" />
+                                <line x1="40" y1="200" x2="380" y2="200" class="chart-grid-line" />
+                                
+                                <!-- Axis Labels -->
+                                <text x="10" y="55" class="chart-axis-text">10K</text>
+                                <text x="10" y="105" class="chart-axis-text">5K</text>
+                                <text x="10" y="155" class="chart-axis-text">2K</text>
+                                <text x="10" y="205" class="chart-axis-text">0</text>
+                                
+                                <text x="40" y="230" class="chart-axis-text">Mon</text>
+                                <text x="100" y="230" class="chart-axis-text">Tue</text>
+                                <text x="160" y="230" class="chart-axis-text">Wed</text>
+                                <text x="220" y="230" class="chart-axis-text">Thu</text>
+                                <text x="280" y="230" class="chart-axis-text">Fri</text>
+                                <text x="340" y="230" class="chart-axis-text">Sat</text>
+
+                                <!-- Area -->
+                                <path d="M40,150 Q100,50 160,90 T280,120 T380,40 V200 H40 Z" class="area-path" />
+                                <!-- Line -->
+                                <path d="M40,150 Q100,50 160,90 T280,120 T380,40" class="line-path" />
+                                
+                                <!-- Points -->
+                                <circle cx="40" cy="150" r="4" fill="#fff" stroke="#0066FF" stroke-width="2"/>
+                                <circle cx="160" cy="90" r="4" fill="#fff" stroke="#0066FF" stroke-width="2"/>
+                                <circle cx="280" cy="120" r="4" fill="#fff" stroke="#0066FF" stroke-width="2"/>
+                                <circle cx="380" cy="40" r="4" fill="#fff" stroke="#0066FF" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Chart 2: Bar Chart (Platform Comparison) -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Platform Comparison</div>
+                            <div class="chart-actions">
+                                <i class="ri-filter-3-line"></i>
+                            </div>
+                        </div>
+                        <div class="chart-visual">
+                            <svg viewBox="0 0 400 250">
+                                <!-- Axis -->
+                                <line x1="40" y1="200" x2="380" y2="200" stroke="#E5E7EB" stroke-width="2" />
+                                
+                                <!-- Bars Group 1: TikTok -->
+                                <rect x="70" y="80" width="30" height="120" rx="4" fill="#111111" />
+                                <text x="85" y="70" text-anchor="middle" class="chart-axis-text" font-weight="bold">12K</text>
+                                <text x="85" y="225" text-anchor="middle" class="chart-axis-text" fill="#000">TikTok</text>
+
+                                <!-- Bars Group 2: Reels -->
+                                <rect x="185" y="50" width="30" height="150" rx="4" fill="url(#igGradient)" />
+                                <text x="200" y="40" text-anchor="middle" class="chart-axis-text" font-weight="bold">15K</text>
+                                <text x="200" y="225" text-anchor="middle" class="chart-axis-text" fill="#E1306C">Reels</text>
+
+                                <!-- Bars Group 3: Shorts -->
+                                <rect x="300" y="100" width="30" height="100" rx="4" fill="#FF0000" />
+                                <text x="315" y="90" text-anchor="middle" class="chart-axis-text" font-weight="bold">10K</text>
+                                <text x="315" y="225" text-anchor="middle" class="chart-axis-text" fill="#FF0000">Shorts</text>
+                                
+                                <defs>
+                                    <linearGradient id="igGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#833AB4"/>
+                                        <stop offset="50%" stop-color="#FD1D1D"/>
+                                        <stop offset="100%" stop-color="#FCAF45"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Chart 3: Radar Chart (Engagement) -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div class="chart-title">Engagement Metrics</div>
+                            <div class="chart-actions">
+                                <i class="ri-question-line"></i>
+                            </div>
+                        </div>
+                        <div class="chart-visual">
+                            <svg viewBox="0 0 300 250">
+                                <!-- Radar Background -->
+                                <g transform="translate(150, 130)">
+                                    <!-- Circles/Polygons -->
+                                    <polygon points="0,-100 95,-31 59,81 -59,81 -95,-31" class="radar-web" />
+                                    <polygon points="0,-75 71,-23 44,61 -44,61 -71,-23" class="radar-web" />
+                                    <polygon points="0,-50 47,-15 29,40 -29,40 -47,-15" class="radar-web" />
+                                    <polygon points="0,-25 24,-8 15,20 -15,20 -24,-8" class="radar-web" />
+                                    
+                                    <!-- Axes -->
+                                    <line x1="0" y1="0" x2="0" y2="-100" class="radar-web"/>
+                                    <line x1="0" y1="0" x2="95" y2="-31" class="radar-web"/>
+                                    <line x1="0" y1="0" x2="59" y2="81" class="radar-web"/>
+                                    <line x1="0" y1="0" x2="-59" y2="81" class="radar-web"/>
+                                    <line x1="0" y1="0" x2="-95" y2="-31" class="radar-web"/>
+
+                                    <!-- Data Shape -->
+                                    <polygon points="0,-85 80,-26 40,55 -30,41 -70,-23" class="radar-area" />
+                                    
+                                    <!-- Labels -->
+                                    <text x="0" y="-110" text-anchor="middle" class="chart-axis-text">Views</text>
+                                    <text x="110" y="-30" text-anchor="middle" class="chart-axis-text">Likes</text>
+                                    <text x="70" y="100" text-anchor="middle" class="chart-axis-text">Shares</text>
+                                    <text x="-70" y="100" text-anchor="middle" class="chart-axis-text">Saves</text>
+                                    <text x="-110" y="-30" text-anchor="middle" class="chart-axis-text">Comments</text>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Video Statistics -->
+            <section class="stats-section">
+                <div class="section-title">
+                    Top Performing Videos
+                    <button style="margin-left: auto; padding: 8px 16px; background: #0066FF; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <i class="ri-download-cloud-line"></i> Export
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-header">
+                        <div>Video ID</div>
+                        <div>Platform</div>
+                        <div>Date</div>
+                        <div class="text-right">Views</div>
+                        <div class="text-right">Likes</div>
+                        <div class="text-right">Comments</div>
+                        <div class="text-right">Engagement</div>
+                    </div>
+                    
+                    <!-- Row 1 -->
+                    <div class="data-row">
+                        <div style="font-family: monospace; color: #6B7280;">#894320</div>
+                        <div><span class="platform-badge plat-ig"><i class="ri-instagram-fill"></i> Reels</span></div>
+                        <div>Oct 24, 2023</div>
+                        <div class="text-right font-bold">1.2M</div>
+                        <div class="text-right">84.2K</div>
+                        <div class="text-right">3.1K</div>
+                        <div class="text-right engagement-high">8.4%</div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="data-row">
+                        <div style="font-family: monospace; color: #6B7280;">#894321</div>
+                        <div><span class="platform-badge plat-tk"><i class="ri-tiktok-fill"></i> TikTok</span></div>
+                        <div>Oct 22, 2023</div>
+                        <div class="text-right font-bold">892K</div>
+                        <div class="text-right">62.5K</div>
+                        <div class="text-right">1.8K</div>
+                        <div class="text-right engagement-high">7.2%</div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="data-row">
+                        <div style="font-family: monospace; color: #6B7280;">#894322</div>
+                        <div><span class="platform-badge plat-yt"><i class="ri-youtube-fill"></i> Shorts</span></div>
+                        <div>Oct 20, 2023</div>
+                        <div class="text-right font-bold">450K</div>
+                        <div class="text-right">24.1K</div>
+                        <div class="text-right">950</div>
+                        <div class="text-right engagement-med">5.1%</div>
+                    </div>
+                </div>
+
+                <div class="pagination">
+                    <div class="page-dot active"></div>
+                    <div class="page-dot"></div>
+                    <div class="page-dot"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html>

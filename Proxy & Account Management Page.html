@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy & Account Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <style>
+        /* Font Imports */
+        @font-face {
+            font-family: 'MiSans';
+            src: url('https://assets-persist.lovart.ai/agent-static-assets/MiSans-Regular.ttf') format('truetype');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'MiSans';
+            src: url('https://assets-persist.lovart.ai/agent-static-assets/MiSans-Medium.ttf') format('truetype');
+            font-weight: 500;
+        }
+        @font-face {
+            font-family: 'MiSans';
+            src: url('https://assets-persist.lovart.ai/agent-static-assets/MiSans-Bold.ttf') format('truetype');
+            font-weight: 700;
+        }
+
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: 'MiSans', sans-serif;
+            background-color: #F3F5F9; /* Very light gray for contrast with white cards */
+            color: #1F2937;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Container */
+        .container {
+            width: 1920px;
+            background-color: #F3F5F9;
+            padding: 30px 40px;
+            overflow: hidden;
+        }
+
+        /* Colors & Vars */
+        :root {
+            --primary: #0066FF;
+            --primary-hover: #0052cc;
+            --text-main: #111827;
+            --text-secondary: #6B7280;
+            --border-color: #E5E7EB;
+            --card-bg: #FFFFFF;
+            --success: #10B981;
+            --danger: #EF4444;
+            --bg-hover: #F9FAFB;
+        }
+
+        /* Top Navigation */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px 32px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            font-size: 28px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .notification-btn::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger);
+            border-radius: 50%;
+            border: 1px solid #fff;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        /* Main Layout */
+        .main-content {
+            display: flex;
+            gap: 24px;
+            height: calc(100vh - 140px); /* Adjust based on header */
+            min-height: 800px;
+        }
+
+        /* Left Section */
+        .left-section {
+            flex: 0 0 60%;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 16px 10px 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #F9FAFB;
+            font-family: 'MiSans';
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--primary);
+            background: #fff;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1px;
+        }
+
+        .tab-item {
+            padding: 10px 24px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-item:hover:not(.active) {
+            color: var(--text-main);
+        }
+
+        /* Account List */
+        .account-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-right: 8px;
+        }
+
+        /* Custom Scrollbar */
+        .account-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .account-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .account-list::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 3px;
+        }
+
+        .account-card {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: #FFFFFF;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .account-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border-color: #BFDBFE;
+            transform: translateY(-2px);
+        }
+
+        .acc-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .acc-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .acc-details h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .acc-platform {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-online {
+            background: #ECFDF5;
+            color: var(--success);
+        }
+
+        .status-offline {
+            background: #FEF2F2;
+            color: var(--danger);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .acc-meta {
+            margin-left: auto;
+            margin-right: 32px;
+            text-align: right;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .btn-edit {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            background: #fff;
+            border-radius: 8px;
+            color: var(--text-main);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .btn-edit:hover {
+            background: #F3F4F6;
+            border-color: #D1D5DB;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #fff;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .page-btn:hover:not(.active) {
+            background: #F3F4F6;
+        }
+
+        /* Right Section */
+        .right-section {
+            flex: 0 0 40%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card-panel {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input, .form-select {
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'MiSans';
+            font-size: 14px;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+            background: #fff;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+        }
+
+        .btn-test {
+            margin-top: 29px; /* Align with input */
+            background: #F3F4F6;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-test:hover {
+            background: #E5E7EB;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-item {
+            background: #F9FAFB;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #F3F4F6;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .last-video {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .video-thumb {
+            width: 80px;
+            height: 100px;
+            border-radius: 8px;
+            object-fit: cover;
+            background-color: #000;
+        }
+
+        .video-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .video-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .video-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Engagement Chart Mock */
+        .engagement-chart {
+            margin-top: 8px;
+        }
+        .chart-bar-container {
+            height: 6px;
+            background: #E5E7EB;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        .chart-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 78%; /* Mock value */
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: auto;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 14px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            box-shadow: 0 4px 6px -1px rgba(0, 102, 255, 0.3);
+        }
+
+        .btn-outline {
+            flex: 1;
+            padding: 14px;
+            background: #fff;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-outline:hover {
+            background: #eff6ff;
+        }
+
+        /* Icons */
+        .platform-icon {
+            font-size: 16px;
+        }
+        .ri-tiktok-fill { color: #000; }
+        .ri-youtube-fill { color: #FF0000; }
+        .ri-instagram-fill { color: #E1306C; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="ri-shield-keyhole-line"></i>
+                <span>ProxyManager</span>
+            </div>
+            <div class="user-profile">
+                <button class="notification-btn">
+                    <i class="ri-notification-3-line"></i>
+                </button>
+                <div class="profile-info">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200&h=200" alt="Admin" class="avatar">
+                    <div class="user-text">
+                        <div class="user-name">Alex Morgan</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">Super Admin</div>
+                    </div>
+                    <i class="ri-arrow-down-s-line" style="color: var(--text-secondary);"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            
+            <!-- Left Section: Accounts -->
+            <section class="left-section">
+                <div class="section-header">
+                    <h2 class="section-title">Accounts</h2>
+                    <div class="search-bar">
+                        <i class="ri-search-line"></i>
+                        <input type="text" placeholder="Search username or ID...">
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab-item active">
+                        <i class="ri-tiktok-fill"></i> TikTok
+                    </div>
+                    <div class="tab-item">
+                        <i class="ri-instagram-fill"></i> Reels
+                    </div>
+                    <div class="tab-item">
+                        <i class="ri-youtube-fill"></i> Shorts
+                    </div>
+                </div>
+
+                <div class="account-list">
+                    <!-- Item 1 -->
+                    <div class="account-card">
+                        <div class="acc-info">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200&h=200" alt="User" class="acc-avatar">
+                            <div class="acc-details">
+                                <h4>@sarah.creates</h4>
+                                <div class="acc-platform">
+                                    <i class="ri-tiktok-fill platform-icon"></i> TikTok US
+                                </div>
+                            </div>
+                        </div>
+                        <div class="acc-meta">
+                            <div class="meta-label">Last Activity</div>
+                            <div class="meta-value">2 mins ago</div>
+                        </div>
+                        <div style="margin-right: 20px;">
+                            <span class="status-badge status-online">
+                                <span class="status-dot"></span> Online
+                            </span>
+                        </div>
+                        <button class="btn-edit">
+                            Edit <i class="ri-pencil-line"></i>
+                        </button>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="account-card">
+                        <div class="acc-info">
+                            <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200&h=200" alt="User" class="acc-avatar">
+                            <div class="acc-details">
+                                <h4>@dave_vlogs_official</h4>
+                                <div class="acc-platform">
+                                    <i class="ri-tiktok-fill platform-icon"></i> TikTok UK
+                                </div>
+                            </div>
+                        </div>
+                        <div class="acc-meta">
+                            <div class="meta-label">Last Activity</div>
+                            <div class="meta-value">1 hour ago</div>
+                        </div>
+                        <div style="margin-right: 20px;">
+                            <span class="status-badge status-offline">
+                                <span class="status-dot"></span> Offline
+                            </span>
+                        </div>
+                        <button class="btn-edit">
+                            Edit <i class="ri-pencil-line"></i>
+                        </button>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="account-card">
+                        <div class="acc-info">
+                            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=200&h=200" alt="User" class="acc-avatar">
+                            <div class="acc-details">
+                                <h4>@fashion_daily_xo</h4>
+                                <div class="acc-platform">
+                                    <i class="ri-tiktok-fill platform-icon"></i> TikTok FR
+                                </div>
+                            </div>
+                        </div>
+                        <div class="acc-meta">
+                            <div class="meta-label">Last Activity</div>
+                            <div class="meta-value">5 mins ago</div>
+                        </div>
+                        <div style="margin-right: 20px;">
+                            <span class="status-badge status-online">
+                                <span class="status-dot"></span> Online
+                            </span>
+                        </div>
+                        <button class="btn-edit">
+                            Edit <i class="ri-pencil-line"></i>
+                        </button>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="account-card">
+                        <div class="acc-info">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200&h=200" alt="User" class="acc-avatar">
+                            <div class="acc-details">
+                                <h4>@jenny.design</h4>
+                                <div class="acc-platform">
+                                    <i class="ri-tiktok-fill platform-icon"></i> TikTok US
+                                </div>
+                            </div>
+                        </div>
+                        <div class="acc-meta">
+                            <div class="meta-label">Last Activity</div>
+                            <div class="meta-value">12 hours ago</div>
+                        </div>
+                        <div style="margin-right: 20px;">
+                            <span class="status-badge status-online">
+                                <span class="status-dot"></span> Online
+                            </span>
+                        </div>
+                        <button class="btn-edit">
+                            Edit <i class="ri-pencil-line"></i>
+                        </button>
+                    </div>
+                     <!-- Item 5 -->
+                     <div class="account-card">
+                        <div class="acc-info">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200&h=200" alt="User" class="acc-avatar">
+                            <div class="acc-details">
+                                <h4>@mike_crypto_zone</h4>
+                                <div class="acc-platform">
+                                    <i class="ri-tiktok-fill platform-icon"></i> TikTok CA
+                                </div>
+                            </div>
+                        </div>
+                        <div class="acc-meta">
+                            <div class="meta-label">Last Activity</div>
+                            <div class="meta-value">1 day ago</div>
+                        </div>
+                        <div style="margin-right: 20px;">
+                            <span class="status-badge status-offline">
+                                <span class="status-dot"></span> Offline
+                            </span>
+                        </div>
+                        <button class="btn-edit">
+                            Edit <i class="ri-pencil-line"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pagination">
+                    <button class="page-btn"><i class="ri-arrow-left-s-line"></i></button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">...</button>
+                    <button class="page-btn"><i class="ri-arrow-right-s-line"></i></button>
+                </div>
+            </section>
+
+            <!-- Right Section: Proxy & Details -->
+            <section class="right-section">
+                
+                <!-- Proxy Settings Card -->
+                <div class="card-panel">
+                    <div class="section-header" style="margin-bottom: 20px;">
+                        <h2 class="section-title">Proxy Settings</h2>
+                        <i class="ri-settings-4-line" style="font-size: 20px; color: var(--text-secondary);"></i>
+                    </div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label class="form-label">Proxy Type</label>
+                            <select class="form-select">
+                                <option>SOCKS5</option>
+                                <option>HTTP</option>
+                                <option>HTTPS</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" style="grid-column: span 1.5;">
+                            <label class="form-label">Proxy Address</label>
+                            <input type="text" class="form-input" value="192.168.1.105" placeholder="IP Address">
+                        </div>
+                        
+                        <div class="form-group" style="grid-column: span 0.5;">
+                            <label class="form-label">Port</label>
+                            <input type="number" class="form-input" value="8080">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-input" value="admin_proxy_01">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" value="********">
+                        </div>
+                    </div>
+                    <button class="btn-test" style="width: 100%; margin-top: 16px;">
+                        <i class="ri-wifi-line"></i> Test Connection
+                    </button>
+                </div>
+
+                <!-- Account Details Card -->
+                <div class="card-panel" style="flex: 1; display: flex; flex-direction: column;">
+                    <div class="section-header" style="margin-bottom: 20px;">
+                        <h2 class="section-title">Details: @sarah.creates</h2>
+                        <span class="status-badge status-online">Active</span>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label"><i class="ri-movie-line"></i> Videos</div>
+                            <div class="stat-value">142</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label"><i class="ri-user-heart-line"></i> Followers</div>
+                            <div class="stat-value">84.2K</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label"><i class="ri-heart-3-line"></i> Likes</div>
+                            <div class="stat-value">1.2M</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label"><i class="ri-chat-1-line"></i> Comments</div>
+                            <div class="stat-value">8,932</div>
+                        </div>
+                    </div>
+
+                    <div class="section-header" style="margin-bottom: 12px; margin-top: 8px;">
+                        <h3 class="section-title" style="font-size: 16px;">Latest Post</h3>
+                    </div>
+
+                    <div class="last-video">
+                        <img src="https://images.unsplash.com/photo-1611162618479-ee3d24aaef0b?auto=format&fit=crop&q=80&w=200&h=300" alt="Video Thumbnail" class="video-thumb">
+                        <div class="video-info">
+                            <div class="video-title">Summer outfit ideas for 2024! ☀️👗 #fashion #summer</div>
+                            <div class="video-meta">
+                                <span><i class="ri-time-line"></i> 2h ago</span>
+                                <span><i class="ri-bar-chart-line"></i> 12.5K views</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="engagement-chart">
+                        <div class="chart-header">
+                            <span style="color: var(--text-secondary);">Engagement Rate</span>
+                            <span style="font-weight: 700; color: var(--primary);">7.8%</span>
+                        </div>
+                        <div class="chart-bar-container">
+                            <div class="chart-bar"></div>
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 6px;">
+                            Top 5% compared to similar accounts
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-outline">
+                            <i class="ri-add-line"></i> Add New Account
+                        </button>
+                        <button class="btn-primary">
+                            <i class="ri-save-3-line"></i> Save Settings
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </div>
+
+</body>
+</html>

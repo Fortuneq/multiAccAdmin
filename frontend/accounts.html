@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/accounts.css">
+</head>
+<body>
+    <div class="page-container">
+        <!-- Navigation -->
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-logo">
+                <i class="ri-bar-chart-grouped-fill"></i>
+                <span>Multi-Account Panel</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">
+                    <i class="ri-dashboard-line"></i><span>Dashboard</span>
+                </a>
+                <a href="accounts.html" class="nav-link active">
+                    <i class="ri-user-line"></i><span>Accounts</span>
+                </a>
+                <a href="generator.html" class="nav-link">
+                    <i class="ri-magic-line"></i><span>Generator</span>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-primary" onclick="showAddAccountModal()">
+                    <i class="ri-add-line"></i> Add Account
+                </button>
+            </div>
+        </nav>
+
+        <div class="content-wrapper">
+            <aside class="sidebar">
+                <!-- Platform Tabs -->
+                <div class="platform-tabs">
+                    <button class="tab-btn active" data-platform="all" onclick="filterByPlatform('all')">
+                        <i class="ri-apps-line"></i> All Platforms
+                    </button>
+                    <button class="tab-btn" data-platform="TikTok" onclick="filterByPlatform('TikTok')">
+                        <i class="ri-tiktok-fill"></i> TikTok
+                    </button>
+                    <button class="tab-btn" data-platform="Reels" onclick="filterByPlatform('Reels')">
+                        <i class="ri-instagram-fill"></i> Reels
+                    </button>
+                    <button class="tab-btn" data-platform="Shorts" onclick="filterByPlatform('Shorts')">
+                        <i class="ri-youtube-fill"></i> Shorts
+                    </button>
+                </div>
+
+                <!-- Search -->
+                <div class="search-box">
+                    <i class="ri-search-line"></i>
+                    <input type="text" id="searchInput" placeholder="Search accounts..." oninput="searchAccounts(this.value)">
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <!-- Header -->
+                <div class="page-header">
+                    <div>
+                        <h1>Account Management</h1>
+                        <p class="subtitle">Manage social media accounts and proxy settings</p>
+                    </div>
+                    <button class="btn-refresh" onclick="loadAccounts()">
+                        <i class="ri-refresh-line"></i>
+                    </button>
+                </div>
+
+                <!-- Accounts Grid -->
+                <div class="accounts-grid" id="accountsGrid">
+                    <!-- Cards populated by JavaScript -->
+                </div>
+            </main>
+
+            <!-- Account Details Panel -->
+            <aside class="details-panel" id="detailsPanel" style="display: none;">
+                <div class="panel-header">
+                    <h3>Account Details</h3>
+                    <button class="btn-close" onclick="closeDetailsPanel()">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
+                <div class="panel-content" id="detailsContent">
+                    <!-- Details populated by JavaScript -->
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/accounts.js"></script>
+</body>
+</html>
